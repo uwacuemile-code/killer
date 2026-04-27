@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>National Citizen Registration Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b2a;
+    --navy2: #1b2e45;
+    --blue: #1a56a0;
+    --blue2: #2271c7;
+    --gold: #c9a84c;
+    --gold2: #e5c97a;
+    --light: #f4f6fb;
+    --white: #ffffff;
+    --text: #1a2535;
+    --muted: #6b7a92;
+    --border: #d4dae6;
+    --success: #1a7a4a;
+    --error: #c0392b;
+    --shadow: 0 4px 24px rgba(13,27,42,0.10);
+    --shadow-lg: 0 12px 48px rgba(13,27,42,0.16);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--light);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    min-height: 100vh;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(26,86,160,0.3); }
+    50%       { box-shadow: 0 0 0 8px rgba(26,86,160,0); }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes checkDraw {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* HEADER */
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 0;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent, transparent 20px,
+      rgba(255,255,255,0.015) 20px, rgba(255,255,255,0.015) 21px
+    );
+  }
+  .header-top {
+    display: flex; align-items: center; gap: 1.5rem;
+    padding: 1.2rem 3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .coat-of-arms {
+    width: 60px; height: 60px;
+    background: radial-gradient(circle, var(--gold2), var(--gold));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 20px rgba(201,168,76,0.4);
+  }
+  .header-title h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .header-title p {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 0.1rem;
+  }
+  .header-info {
+    margin-left: auto;
+    text-align: right;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.6;
+  }
+  .header-bar {
+    display: flex;
+    background: var(--blue);
+    padding: 0.5rem 3rem;
+    gap: 2rem;
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+  .header-bar span { cursor: default; }
+  .header-bar .active { color: var(--gold2); font-weight: 600; }
+
+  /* MAIN LAYOUT */
+  .container {
+    max-width: 1100px;
+    margin: 2.5rem auto;
+    padding: 0 1.5rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  /* PROGRESS TRACKER */
+  .progress-track {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.8rem 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+  .step-circle {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    transition: all 0.4s ease;
+    position: relative;
+  }
+  .step-circle.active {
+    border-color: var(--blue);
+    background: var(--blue);
+    color: white;
+    animation: pulse 2s infinite;
+  }
+  .step-circle.done {
+    border-color: var(--success);
+    background: var(--success);
+    color: white;
+  }
+  .step-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    text-align: center;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.4s;
+    white-space: nowrap;
+  }
+  .step-label.active { color: var(--blue); font-weight: 600; }
+  .step-label.done { color: var(--success); }
+  .step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    margin: 0 0.5rem;
+    margin-bottom: 1.5rem;
+    transition: background 0.4s;
+  }
+  .step-line.done { background: var(--success); }
+
+  /* FORM CARD */
+  .form-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .form-card-header {
+    background: linear-gradient(135deg, var(--navy), var(--navy2));
+    color: white;
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .form-card-header .step-icon {
+    width: 44px; height: 44px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .form-card-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .form-card-header p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.55);
+    margin-top: 0.15rem;
+  }
+  .form-notice {
+    background: #eef4ff;
+    border-left: 4px solid var(--blue);
+    padding: 0.85rem 1.5rem;
+    font-size: 0.82rem;
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  /* FORM BODY */
+  .form-body { padding: 2.5rem; }
+  .form-section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+  .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-group label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.3px;
+  }
+  .form-group label .req { color: var(--error); margin-left: 2px; }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    border: 1.5px solid var(--border);
+    background: var(--light);
+    color: var(--text);
+    padding: 0.72rem 1rem;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    border-radius: 3px;
+    outline: none;
+    transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+    appearance: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--blue);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(26,86,160,0.08);
+  }
+  .form-group input.error,
+  .form-group select.error,
+  .form-group textarea.error {
+    border-color: var(--error);
+    background: #fff8f8;
+  }
+  .form-group .field-error {
+    font-size: 0.73rem;
+    color: var(--error);
+    display: none;
+  }
+  .form-group .field-error.show { display: block; }
+  .form-group textarea { resize: none; height: 90px; }
+  .form-group select option { background: white; }
+  .form-group .hint {
+    font-size: 0.71rem;
+    color: var(--muted);
+  }
+
+  /* PHOTO UPLOAD */
+  .photo-upload {
+    border: 2px dashed var(--border);
+    border-radius: 4px;
+    background: var(--light);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .photo-upload:hover { border-color: var(--blue); background: #eef4ff; }
+  .photo-upload input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .photo-upload .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .photo-upload p { font-size: 0.82rem; color: var(--muted); }
+  .photo-upload strong { color: var(--blue); }
+  .photo-preview {
+    width: 110px; height: 130px;
+    object-fit: cover;
+    border: 2px solid var(--border);
+    border-radius: 3px;
+    display: none;
+    margin: 0 auto 0.5rem;
+  }
+
+  /* RADIO / CHECKBOX GROUPS */
+  .radio-group, .check-group { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.2rem; }
+  .radio-opt, .check-opt {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.25s;
+    background: var(--light);
+    user-select: none;
+  }
+  .radio-opt:hover, .check-opt:hover { border-color: var(--blue); background: #eef4ff; }
+  .radio-opt input, .check-opt input { accent-color: var(--blue); }
+  .radio-opt.selected, .check-opt.selected { border-color: var(--blue); background: #eef4ff; color: var(--blue); font-weight: 600; }
+
+  /* FORM FOOTER */
+  .form-footer {
+    padding: 1.5rem 2.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fafbfd;
+  }
+  .btn {
+    padding: 0.75rem 2rem;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-primary {
+    background: var(--blue);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--blue2); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,86,160,0.3); }
+  .btn-secondary {
+    background: none;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+  .btn-success {
+    background: var(--success);
+    color: white;
+  }
+  .btn-success:hover { background: #156038; transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+  .save-draft {
+    font-size: 0.78rem;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: underline;
+    background: none; border: none;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  .save-draft:hover { color: var(--blue); }
+
+  /* REVIEW SECTION */
+  .review-block {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .review-block-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .edit-link {
+    font-size: 0.75rem;
+    color: var(--blue);
+    cursor: pointer;
+    text-decoration: underline;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem 2rem; }
+  .review-item label { font-size: 0.72rem; color: var(--muted); display: block; margin-bottom: 0.15rem; }
+  .review-item span { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+
+  /* DECLARATION */
+  .declaration-box {
+    background: #fffdf0;
+    border: 1.5px solid var(--gold);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .declaration-box h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    color: var(--navy);
+  }
+  .declaration-box p {
+    font-size: 0.83rem;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+  .declaration-check { display: flex; align-items: flex-start; gap: 0.7rem; cursor: pointer; }
+  .declaration-check input { margin-top: 3px; accent-color: var(--blue); width: 16px; height: 16px; flex-shrink: 0; }
+  .declaration-check span { font-size: 0.83rem; font-weight: 600; color: var(--text); line-height: 1.5; }
+
+  /* SUCCESS SCREEN */
+  #successScreen { display: none; animation: fadeUp 0.6s ease both; }
+  .success-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    padding: 4rem 3rem;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+  .success-icon {
+    width: 90px; height: 90px;
+    background: linear-gradient(135deg, #1a7a4a, #22a060);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.8rem;
+    box-shadow: 0 8px 32px rgba(26,122,74,0.3);
+  }
+  .success-icon svg { width: 44px; height: 44px; }
+  .checkmark-path {
+    stroke: white; stroke-width: 4; fill: none;
+    stroke-dasharray: 60; stroke-dashoffset: 60;
+    animation: checkDraw 0.6s 0.3s ease forwards;
+  }
+  .success-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+  }
+  .success-card .sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; }
+  .reg-number-box {
+    background: var(--light);
+    border: 2px dashed var(--border);
+    border-radius: 4px;
+    padding: 1.2rem 2rem;
+    margin: 0 auto 2rem;
+    display: inline-block;
+  }
+  .reg-number-box small { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 0.3rem; }
+  .reg-number-box strong { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--navy); letter-spacing: 3px; }
+  .success-steps { text-align: left; background: var(--light); border-radius: 4px; padding: 1.2rem 1.5rem; margin-bottom: 2rem; }
+  .success-steps h4 { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
+  .success-step-item { display: flex; gap: 0.8rem; align-items: flex-start; margin-bottom: 0.7rem; font-size: 0.85rem; }
+  .success-step-item .num { width: 22px; height: 22px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .print-btn { background: var(--navy); color: white; padding: 0.85rem 2.5rem; border: none; border-radius: 3px; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.3s; }
+  .print-btn:hover { background: var(--navy2); }
+
+  /* ALERT */
+  .alert {
+    padding: 0.85rem 1.2rem;
+    border-radius: 3px;
+    font-size: 0.83rem;
+    margin-bottom: 1.2rem;
+    display: none;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .alert.show { display: flex; animation: fadeIn 0.3s ease; }
+  .alert-error { background: #fdf0ef; border: 1px solid #e8b4b0; color: var(--error); }
+
+  /* LOADER */
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .header-top { padding: 1rem 1.2rem; }
+    .header-bar { padding: 0.5rem 1.2rem; gap: 1rem; }
+    .container { margin: 1rem auto; }
+    .form-row { grid-template-columns: 1fr; }
+    .form-row.three { grid-template-columns: 1fr; }
+    .form-body { padding: 1.5rem; }
+    .form-footer { flex-wrap: wrap; gap: 1rem; }
+    .progress-track { padding: 1.2rem; overflow-x: auto; }
+    .step-label { font-size: 0.55rem; }
+    .review-grid { grid-template-columns: 1fr; }
+    .header-info { display: none; }
+    .success-card { padding: 2.5rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <div class="coat-of-arms">🏛️</div>
+    <div class="header-title">
+      <h1>National Citizen Registration Portal</h1>
+      <p>Ministry of Home Affairs &amp; Civil Registration</p>
+    </div>
+    <div class="header-info">
+      <div id="clock"></div>
+      <div>Portal v2.4 &nbsp;|&nbsp; Secure Connection 🔒</div>
+    </div>
+  </div>
+  <div class="header-bar">
+    <span class="active">Citizen Registration</span>
+    <span>Track Application</span>
+    <span>Help &amp; Support</span>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- PROGRESS -->
+  <div class="progress-track" id="progressTrack">
+    <div class="progress-step">
+      <div class="step-circle active" id="c1">1</div>
+      <div class="step-label active" id="l1">Personal Info</div>
+    </div>
+    <div class="step-line" id="line1"></div>
+    <div class="progress-step">
+      <div class="step-circle" id="c2">2</div>
+      <div class="step-label" id="l2">Address</div>
+    </div>
+    <div class="step-line" id="line2"></div>
+    <div class="progress-step">
+      <div class="step-circle" id="c3">3</div>
+      <div class="step-label" id="l3">Identity Docs</div>
+    </div>
+    <div class="step-line" id="line3"></div>
+    <div class="progress-step">
+      <div class="step-circle" id="c4">4</div>
+      <div class="step-label" id="l4">Family Info</div>
+    </div>
+    <div class="step-line" id="line4"></div>
+    <div class="progress-step">
+      <div class="step-circle" id="c5">5</div>
+      <div class="step-label" id="l5">Review &amp; Submit</div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 1: PERSONAL INFO ===== -->
+  <div class="form-card" id="step1">
+    <div class="form-card-header">
+      <div class="step-icon">👤</div>
+      <div>
+        <h2>Personal Information</h2>
+        <p>Step 1 of 5 — Enter your personal details exactly as they appear on your documents</p>
+      </div>
+    </div>
+    <div class="form-notice">
+      ℹ️ All fields marked with <strong>*</strong> are mandatory. Please use your legal name as it appears on your birth certificate.
+    </div>
+    <div class="form-body">
+      <div class="alert alert-error" id="err1">⚠ Please fill in all required fields correctly.</div>
+
+      <div class="form-section-title">Full Legal Name</div>
+      <div class="form-row three">
+        <div class="form-group">
+          <label>First Name <span class="req">*</span></label>
+          <input type="text" id="firstName" placeholder="e.g. Jean Pierre">
+          <span class="field-error" id="e-firstName">Required</span>
+        </div>
+        <div class="form-group">
+          <label>Middle Name</label>
+          <input type="text" id="middleName" placeholder="Optional">
+        </div>
+        <div class="form-group">
+          <label>Last Name <span class="req">*</span></label>
+          <input type="text" id="lastName" placeholder="e.g. Mukamana">
+          <span class="field-error" id="e-lastName">Required</span>
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:1.8rem">Date &amp; Place of Birth</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date of Birth <span class="req">*</span></label>
+          <input type="date" id="dob">
+          <span class="field-error" id="e-dob">Required</span>
+        </div>
+        <div class="form-group">
+          <label>Place of Birth (City/Town) <span class="req">*</span></label>
+          <input type="text" id="pob" placeholder="e.g. Kigali">
+          <span class="field-error" id="e-pob">Required</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Country of Birth <span class="req">*</span></label>
+          <select id="cob">
+            <option value="">— Select Country —</option>
+            <option>Rwanda</option><option>Uganda</option><option>Kenya</option>
+            <option>Tanzania</option><option>Burundi</option><option>DRC</option>
+            <option>Ethiopia</option><option>Nigeria</option><option>Ghana</option>
+            <option>South Africa</option><option>USA</option><option>UK</option>
+            <option>France</option><option>Belgium</option><option>Canada</option>
+            <option>China</option><option>India</option><option>Other</option>
+          </select>
+          <span class="field-error" id="e-cob">Required</span>
+        </div>
+        <div class="form-group">
+          <label>Nationality <span class="req">*</span></label>
+          <select id="nationality">
+            <option value="">— Select Nationality —</option>
+            <option>Rwandan</option><option>Ugandan</option><option>Kenyan</option>
+            <option>Tanzanian</option><option>Burundian</option><option>Congolese</option>
+            <option>Ethiopian</option><option>Nigerian</option><option>Ghanaian</option>
+            <option>South African</option><option>American</option><option>British</option>
+            <option>French</option><option>Belgian</option><option>Canadian</option>
+            <option>Chinese</option><option>Indian</option><option>Other</option>
+          </select>
+          <span class="field-error" id="e-nationality">Required</span>
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:1.8rem">Personal Details</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Gender <span class="req">*</span></label>
+          <div class="radio-group" id="genderGroup">
+            <label class="radio-opt"><input type="radio" name="gender" value="Male"> Male</label>
+            <label class="radio-opt"><input type="radio" name="gender" value="Female"> Female</label>
+            <label class="radio-opt"><input type="radio" name="gender" value="Other"> Other</label>
+          </div>
+          <span class="field-error" id="e-gender">Please select gender</span>
+        </div>
+        <div class="form-group">
+          <label>Marital Status <span class="req">*</span></label>
+          <select id="marital">
+            <option value="">— Select Status —</option>
+            <option>Single</option><option>Married</option>
+            <option>Divorced</option><option>Widowed</option><option>Separated</option>
+          </select>
+          <span class="field-error" id="e-marital">Required</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone Number <span class="req">*</span></label>
+          <input type="tel" id="phone" placeholder="+250 7XX XXX XXX">
+          <span class="field-error" id="e-phone">Enter a valid phone number</span>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder="your@email.com">
+          <span class="hint">Optional — used for notifications</span>
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:1.8rem">Passport Photo</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Upload Recent Passport Photo</label>
+          <div class="photo-upload" id="photoBox" onclick="document.getElementById('photoInput').click()">
+            <input type="file" id="photoInput" accept="image/*" onchange="previewPhoto(event)" style="display:none">
+            <img id="photoPreview" class="photo-preview">
+            <div id="uploadPlaceholder">
+              <div class="upload-icon">📷</div>
+              <p><strong>Click to upload</strong> or drag & drop<br>JPG, PNG — Max 2MB — White background</p>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Blood Group</label>
+          <select id="blood">
+            <option value="">— Select —</option>
+            <option>A+</option><option>A−</option><option>B+</option><option>B−</option>
+            <option>AB+</option><option>AB−</option><option>O+</option><option>O−</option>
+            <option>Unknown</option>
+          </select>
+          <div style="margin-top:1rem">
+            <label>Any Disability?</label>
+            <select id="disability">
+              <option value="None">None</option>
+              <option>Visual Impairment</option>
+              <option>Hearing Impairment</option>
+              <option>Physical Disability</option>
+              <option>Cognitive Disability</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="save-draft">💾 Save Draft</button>
+      <button class="btn btn-primary" onclick="nextStep(1)">Next: Address →</button>
+    </div>
+  </div>
+
+  <!-- ===== STEP 2: ADDRESS ===== -->
+  <div class="form-card" id="step2" style="display:none">
+    <div class="form-card-header">
+      <div class="step-icon">🏠</div>
+      <div>
+        <h2>Residential Address</h2>
+        <p>Step 2 of 5 — Provide your current and permanent address details</p>
+      </div>
+    </div>
+    <div class="form-body">
+      <div class="alert alert-error" id="err2">⚠ Please fill in all required fields.</div>
+
+      <div class="form-section-title">Current Residential Address</div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Street / House Address <span class="req">*</span></label>
+          <input type="text" id="street" placeholder="e.g. KG 7 Avenue, House No. 12">
+          <span class="field-error" id="e-street">Required</span>
+        </div>
+      </div>
+      <div class="form-row three">
+        <div class="form-group">
+          <label>Province / Region <span class="req">*</span></label>
+          <select id="province">
+            <option value="">— Select —</option>
+            <option>Kigali City</option><option>Northern Province</option>
+            <option>Southern Province</option><option>Eastern Province</option>
+            <option>Western Province</option>
+          </select>
+          <span class="field-error" id="e-province">Required</span>
+        </div>
+        <div class="form-group">
+          <label>District <span class="req">*</span></label>
+          <input type="text" id="district" placeholder="e.g. Gasabo">
+          <span class="field-error" id="e-district">Required</span>
+        </div>
+        <div class="form-group">
+          <label>Sector / Village <span class="req">*</span></label>
+          <input type="text" id="sector" placeholder="e.g. Kimironko">
+          <span class="field-error" id="e-sector">Required</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Country of Residence <span class="req">*</span></label>
+          <select id="country">
+            <option value="">— Select Country —</option>
+            <option>Rwanda</option><option>Uganda</option><option>Kenya</option>
+            <option>Tanzania</option><option>Burundi</option><option>DRC</option>
+            <option>Ethiopia</option><option>Nigeria</option><option>Ghana</option>
+            <option>South Africa</option><option>USA</option><option>UK</option>
+            <option>France</option><option>Belgium</option><option>Canada</option>
+            <option>Other</option>
+          </select>
+          <span class="field-error" id="e-country">Required</span>
+        </div>
+        <div class="form-group">
+          <label>Postal Code / PO Box</label>
+          <input type="text" id="postal" placeholder="e.g. 3902">
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:1.8rem">Duration &amp; Ownership</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>How long at this address? <span class="req">*</span></label>
+          <select id="duration">
+            <option value="">— Select —</option>
+            <option>Less than 1 year</option><option>1–2 years</option>
+            <option>3–5 years</option><option>6–10 years</option>
+            <option>More than 10 years</option>
+          </select>
+          <span class="field-error" id="e-duration">Required</span>
+        </div>
+        <div class="form-group">
+          <label>Accommodation Type</label>
+          <select id="accommodation">
+            <option value="">— Select —</option>
+            <option>Own House</option><option>Rented</option>
+            <option>Family Home</option><option>Government Housing</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:1.8rem">Previous Address (if different)</div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Previous Address</label>
+          <input type="text" id="prevAddress" placeholder="Leave blank if same as current">
+        </div>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn btn-secondary" onclick="prevStep(2)">← Back</button>
+      <div style="display:flex;gap:1rem;align-items:center">
+        <button class="save-draft">💾 Save Draft</button>
+        <button class="btn btn-primary" onclick="nextStep(2)">Next: Documents →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 3: IDENTITY DOCUMENTS ===== -->
+  <div class="form-card" id="step3" style="display:none">
+    <div class="form-card-header">
+      <div class="step-icon">📋</div>
+      <div>
+        <h2>Identity Documents</h2>
+        <p>Step 3 of 5 — Provide details of your official identification documents</p>
+      </div>
+    </div>
+    <div class="form-notice">
+      ℹ️ You must provide at least one valid identity document. All documents will be verified.
+    </div>
+    <div class="form-body">
+      <div class="alert alert-error" id="err3">⚠ Please provide at least one valid document.</div>
+
+      <div class="form-section-title">National ID / Birth Certificate</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Document Type <span class="req">*</span></label>
+          <select id="docType">
+            <option value="">— Select Type —</option>
+            <option>National ID Card</option>
+            <option>Birth Certificate</option>
+            <option>Passport</option>
+            <option>Refugee Certificate</option>
+            <option>Stateless Person Document</option>
+          </select>
+          <span class="field-error" id="e-docType">Required</span>
+        </div>
+        <div class="form-group">
+          <label>Document Number <span class="req">*</span></label>
+          <input type="text" id="docNumber" placeholder="e.g. 1199880012345678">
+          <span class="field-error" id="e-docNumber">Required</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Issue Date <span class="req">*</span></label>
+          <input type="date" id="issueDate">
+          <span class="field-error" id="e-issueDate">Required</span>
+        </div>
+        <div class="form-group">
+          <label>Expiry Date</label>
+          <input type="date" id="expiryDate">
+          <span class="hint">Leave blank if document has no expiry</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Issuing Authority</label>
+          <input type="text" id="issuingAuth" placeholder="e.g. Rwanda National Identification Agency">
+        </div>
+        <div class="form-group">
+          <label>Issuing Country</label>
+          <select id="issuingCountry">
+            <option value="">— Select —</option>
+            <option>Rwanda</option><option>Uganda</option><option>Kenya</option>
+            <option>Tanzania</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:1.8rem">Passport Details (if applicable)</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Passport Number</label>
+          <input type="text" id="passportNo" placeholder="e.g. PC1234567">
+        </div>
+        <div class="form-group">
+          <label>Passport Expiry</label>
+          <input type="date" id="passportExpiry">
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:1.8rem">Education &amp; Occupation</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Highest Level of Education</label>
+          <select id="education">
+            <option value="">— Select —</option>
+            <option>No Formal Education</option><option>Primary School</option>
+            <option>Secondary School</option><option>Vocational Training</option>
+            <option>Bachelor's Degree</option><option>Master's Degree</option>
+            <option>PhD / Doctorate</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Occupation / Profession</label>
+          <input type="text" id="occupation" placeholder="e.g. Teacher, Farmer, Engineer">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Employer / Organization</label>
+          <input type="text" id="employer" placeholder="e.g. Government of Rwanda">
+        </div>
+        <div class="form-group">
+          <label>Religion</label>
+          <select id="religion">
+            <option value="">— Select —</option>
+            <option>Christianity</option><option>Islam</option>
+            <option>Traditional / Indigenous</option><option>No Religion</option>
+            <option>Other</option><option>Prefer not to say</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn btn-secondary" onclick="prevStep(3)">← Back</button>
+      <div style="display:flex;gap:1rem;align-items:center">
+        <button class="save-draft">💾 Save Draft</button>
+        <button class="btn btn-primary" onclick="nextStep(3)">Next: Family Info →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 4: FAMILY INFO ===== -->
+  <div class="form-card" id="step4" style="display:none">
+    <div class="form-card-header">
+      <div class="step-icon">👨‍👩‍👧</div>
+      <div>
+        <h2>Family Information</h2>
+        <p>Step 4 of 5 — Provide details about your parents and emergency contact</p>
+      </div>
+    </div>
+    <div class="form-body">
+      <div class="form-section-title">Father's Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Father's Full Name</label>
+          <input type="text" id="fatherName" placeholder="Full legal name">
+        </div>
+        <div class="form-group">
+          <label>Father's Nationality</label>
+          <select id="fatherNat">
+            <option value="">— Select —</option>
+            <option>Rwandan</option><option>Ugandan</option><option>Kenyan</option>
+            <option>Tanzanian</option><option>Other</option><option>Unknown</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Father's ID / Passport Number</label>
+          <input type="text" id="fatherId" placeholder="Optional">
+        </div>
+        <div class="form-group">
+          <label>Father's Status</label>
+          <select id="fatherStatus">
+            <option value="">— Select —</option>
+            <option>Alive</option><option>Deceased</option><option>Unknown</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:1.8rem">Mother's Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Mother's Full Name</label>
+          <input type="text" id="motherName" placeholder="Full legal name (maiden name)">
+        </div>
+        <div class="form-group">
+          <label>Mother's Nationality</label>
+          <select id="motherNat">
+            <option value="">— Select —</option>
+            <option>Rwandan</option><option>Ugandan</option><option>Kenyan</option>
+            <option>Tanzanian</option><option>Other</option><option>Unknown</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Mother's ID / Passport Number</label>
+          <input type="text" id="motherId" placeholder="Optional">
+        </div>
+        <div class="form-group">
+          <label>Mother's Status</label>
+          <select id="motherStatus">
+            <option value="">— Select —</option>
+            <option>Alive</option><option>Deceased</option><option>Unknown</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:1.8rem">Spouse (if married)</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Spouse Full Name</label>
+          <input type="text" id="spouseName" placeholder="Leave blank if not applicable">
+        </div>
+        <div class="form-group">
+          <label>Spouse ID Number</label>
+          <input type="text" id="spouseId" placeholder="Leave blank if not applicable">
+        </div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:1.8rem">Emergency Contact <span class="req">*</span></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contact Full Name <span class="req">*</span></label>
+          <input type="text" id="emergName" placeholder="e.g. Alice Mukamana">
+          <span class="field-error" id="e-emergName">Required</span>
+        </div>
+        <div class="form-group">
+          <label>Relationship <span class="req">*</span></label>
+          <select id="emergRel">
+            <option value="">— Select —</option>
+            <option>Parent</option><option>Spouse</option><option>Sibling</option>
+            <option>Child</option><option>Friend</option><option>Other</option>
+          </select>
+          <span class="field-error" id="e-emergRel">Required</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contact Phone <span class="req">*</span></label>
+          <input type="tel" id="emergPhone" placeholder="+250 7XX XXX XXX">
+          <span class="field-error" id="e-emergPhone">Required</span>
+        </div>
+        <div class="form-group">
+          <label>Contact Email</label>
+          <input type="email" id="emergEmail" placeholder="Optional">
+        </div>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn btn-secondary" onclick="prevStep(4)">← Back</button>
+      <div style="display:flex;gap:1rem;align-items:center">
+        <button class="save-draft">💾 Save Draft</button>
+        <button class="btn btn-primary" onclick="nextStep(4)">Next: Review →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 5: REVIEW & SUBMIT ===== -->
+  <div class="form-card" id="step5" style="display:none">
+    <div class="form-card-header">
+      <div class="step-icon">✅</div>
+      <div>
+        <h2>Review &amp; Submit</h2>
+        <p>Step 5 of 5 — Review your information carefully before final submission</p>
+      </div>
+    </div>
+    <div class="form-body" id="reviewContent"></div>
+    <div class="form-footer">
+      <button class="btn btn-secondary" onclick="prevStep(5)">← Back</button>
+      <button class="btn btn-success" id="submitBtn" onclick="submitForm()">
+        <span id="submitText">✅ Submit Registration</span>
+        <div class="spinner" id="submitSpinner"></div>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /.container -->
+
+<!-- SUCCESS -->
+<div class="container" id="successScreen">
+  <div class="success-card">
+    <div class="success-icon">
+      <svg viewBox="0 0 44 44">
+        <path class="checkmark-path" d="M8 22 L18 32 L36 14" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2>Registration Submitted!</h2>
+    <p class="sub">Your citizen registration application has been received and is being processed.</p>
+    <div class="reg-number-box">
+      <small>Your Application Reference Number</small>
+      <strong id="refNumber">—</strong>
+    </div>
+    <div class="success-steps">
+      <h4>What Happens Next</h4>
+      <div class="success-step-item"><div class="num">1</div><div>Your application is reviewed by a civil registration officer within <strong>3–5 working days</strong>.</div></div>
+      <div class="success-step-item"><div class="num">2</div><div>You will receive an <strong>SMS and/or email</strong> confirmation with your application status.</div></div>
+      <div class="success-step-item"><div class="num">3</div><div>Visit any <strong>Civil Registration Office</strong> with your reference number and original documents for verification.</div></div>
+      <div class="success-step-item"><div class="num">4</div><div>Upon approval, your <strong>National ID Card</strong> will be issued within 10–15 working days.</div></div>
+    </div>
+    <button class="print-btn" onclick="window.print()">🖨️ Print Confirmation</button>
+  </div>
+</div>
+
+<script>
+// Clock
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toLocaleString('en-GB', {dateStyle:'medium',timeStyle:'short'});
+}
+updateClock(); setInterval(updateClock, 30000);
+
+// Photo preview
+function previewPhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('photoPreview').src = ev.target.result;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('uploadPlaceholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// Radio styling
+document.querySelectorAll('.radio-opt').forEach(opt => {
+  opt.addEventListener('click', () => {
+    opt.closest('.radio-group').querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+  });
+});
+
+// Helper
+function val(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function showErr(id, show) {
+  const el = document.getElementById('e-' + id);
+  const inp = document.getElementById(id);
+  if (el) el.classList.toggle('show', show);
+  if (inp) inp.classList.toggle('error', show);
+}
+function req(id) {
+  const v = val(id);
+  const ok = v !== '';
+  showErr(id, !ok);
+  return ok;
+}
+
+// VALIDATION PER STEP
+function validateStep(n) {
+  let ok = true;
+  if (n === 1) {
+    ok = req('firstName') & req('lastName') & req('dob') & req('pob') & req('cob') & req('nationality') & req('phone') & req('marital');
+    const g = document.querySelector('input[name="gender"]:checked');
+    if (!g) { document.getElementById('e-gender').classList.add('show'); ok = false; }
+    else document.getElementById('e-gender').classList.remove('show');
+    if (ok) document.getElementById('err1').classList.remove('show');
+    else document.getElementById('err1').classList.add('show');
+  } else if (n === 2) {
+    ok = req('street') & req('province') & req('district') & req('sector') & req('country') & req('duration');
+    if (ok) document.getElementById('err2').classList.remove('show');
+    else document.getElementById('err2').classList.add('show');
+  } else if (n === 3) {
+    ok = req('docType') & req('docNumber') & req('issueDate');
+    if (ok) document.getElementById('err3').classList.remove('show');
+    else document.getElementById('err3').classList.add('show');
+  } else if (n === 4) {
+    ok = req('emergName') & req('emergRel') & req('emergPhone');
+  }
+  return !!ok;
+}
+
+function nextStep(current) {
+  if (!validateStep(current)) return;
+  document.getElementById('step' + current).style.display = 'none';
+  const next = current + 1;
+  document.getElementById('step' + next).style.display = 'block';
+  document.getElementById('step' + next).scrollIntoView({behavior:'smooth', block:'start'});
+  updateProgress(next);
+  if (next === 5) buildReview();
+}
+
+function prevStep(current) {
+  document.getElementById('step' + current).style.display = 'none';
+  const prev = current - 1;
+  document.getElementById('step' + prev).style.display = 'block';
+  document.getElementById('step' + prev).scrollIntoView({behavior:'smooth', block:'start'});
+  updateProgress(prev);
+}
+
+function updateProgress(active) {
+  for (let i = 1; i <= 5; i++) {
+    const c = document.getElementById('c' + i);
+    const l = document.getElementById('l' + i);
+    c.className = 'step-circle';
+    l.className = 'step-label';
+    if (i < active) { c.classList.add('done'); c.innerHTML = '✓'; l.classList.add('done'); }
+    else if (i === active) { c.classList.add('active'); c.innerHTML = i; l.classList.add('active'); }
+    else { c.innerHTML = i; }
+    if (i < 5) {
+      const line = document.getElementById('line' + i);
+      line.className = 'step-line' + (i < active ? ' done' : '');
+    }
+  }
+}
+
+function rv(id, fallback='—') { const v = val(id); return v || fallback; }
+function rvRadio(name) { const g = document.querySelector(`input[name="${name}"]:checked`); return g ? g.value : '—'; }
+
+function buildReview() {
+  const html = `
+    <div class="alert alert-error" id="err5" style="display:none">⚠ Please accept the declaration before submitting.</div>
+
+    <div class="review-block">
+      <div class="review-block-title">Personal Information <span class="edit-link" onclick="goToStep(1)">✏ Edit</span></div>
+      <div class="review-grid">
+        <div class="review-item"><label>Full Name</label><span>${rv('firstName')} ${rv('middleName','')} ${rv('lastName')}</span></div>
+        <div class="review-item"><label>Date of Birth</label><span>${rv('dob')}</span></div>
+        <div class="review-item"><label>Place of Birth</label><span>${rv('pob')}, ${rv('cob')}</span></div>
+        <div class="review-item"><label>Nationality</label><span>${rv('nationality')}</span></div>
+        <div class="review-item"><label>Gender</label><span>${rvRadio('gender')}</span></div>
+        <div class="review-item"><label>Marital Status</label><span>${rv('marital')}</span></div>
+        <div class="review-item"><label>Phone</label><span>${rv('phone')}</span></div>
+        <div class="review-item"><label>Email</label><span>${rv('email','Not provided')}</span></div>
+        <div class="review-item"><label>Blood Group</label><span>${rv('blood','Not provided')}</span></div>
+        <div class="review-item"><label>Disability</label><span>${rv('disability','None')}</span></div>
+      </div>
+    </div>
+
+    <div class="review-block">
+      <div class="review-block-title">Residential Address <span class="edit-link" onclick="goToStep(2)">✏ Edit</span></div>
+      <div class="review-grid">
+        <div class="review-item"><label>Street Address</label><span>${rv('street')}</span></div>
+        <div class="review-item"><label>Province</label><span>${rv('province')}</span></div>
+        <div class="review-item"><label>District</label><span>${rv('district')}</span></div>
+        <div class="review-item"><label>Sector</label><span>${rv('sector')}</span></div>
+        <div class="review-item"><label>Country</label><span>${rv('country')}</span></div>
+        <div class="review-item"><label>Duration at Address</label><span>${rv('duration')}</span></div>
+        <div class="review-item"><label>Accommodation Type</label><span>${rv('accommodation','Not provided')}</span></div>
+        <div class="review-item"><label>Postal Code</label><span>${rv('postal','Not provided')}</span></div>
+      </div>
+    </div>
+
+    <div class="review-block">
+      <div class="review-block-title">Identity Documents <span class="edit-link" onclick="goToStep(3)">✏ Edit</span></div>
+      <div class="review-grid">
+        <div class="review-item"><label>Document Type</label><span>${rv('docType')}</span></div>
+        <div class="review-item"><label>Document Number</label><span>${rv('docNumber')}</span></div>
+        <div class="review-item"><label>Issue Date</label><span>${rv('issueDate')}</span></div>
+        <div class="review-item"><label>Expiry Date</label><span>${rv('expiryDate','No expiry')}</span></div>
+        <div class="review-item"><label>Issuing Authority</label><span>${rv('issuingAuth','—')}</span></div>
+        <div class="review-item"><label>Education</label><span>${rv('education','Not provided')}</span></div>
+        <div class="review-item"><label>Occupation</label><span>${rv('occupation','Not provided')}</span></div>
+        <div class="review-item"><label>Religion</label><span>${rv('religion','Not provided')}</span></div>
+      </div>
+    </div>
+
+    <div class="review-block">
+      <div class="review-block-title">Family Information <span class="edit-link" onclick="goToStep(4)">✏ Edit</span></div>
+      <div class="review-grid">
+        <div class="review-item"><label>Father's Name</label><span>${rv('fatherName','Not provided')}</span></div>
+        <div class="review-item"><label>Mother's Name</label><span>${rv('motherName','Not provided')}</span></div>
+        <div class="review-item"><label>Spouse Name</label><span>${rv('spouseName','Not applicable')}</span></div>
+        <div class="review-item"><label>Emergency Contact</label><span>${rv('emergName')}</span></div>
+        <div class="review-item"><label>Relationship</label><span>${rv('emergRel')}</span></div>
+        <div class="review-item"><label>Emergency Phone</label><span>${rv('emergPhone')}</span></div>
+      </div>
+    </div>
+
+    <div class="declaration-box">
+      <h4>📜 Solemn Declaration</h4>
+      <p>I, <strong>${rv('firstName')} ${rv('lastName')}</strong>, hereby solemnly declare that all the information provided in this registration form is true, accurate, and complete to the best of my knowledge and belief. I understand that providing false information is a criminal offence punishable under the laws of the Republic.</p>
+      <label class="declaration-check">
+        <input type="checkbox" id="declCheck">
+        <span>I confirm that all information is accurate and I accept full legal responsibility for this declaration.</span>
+      </label>
+    </div>
+  `;
+  document.getElementById('reviewContent').innerHTML = html;
+}
+
+function goToStep(n) {
+  for (let i = 1; i <= 5; i++) document.getElementById('step' + i).style.display = 'none';
+  document.getElementById('step' + n).style.display = 'block';
+  updateProgress(n);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function submitForm() {
+  const decl = document.getElementById('declCheck');
+  if (!decl || !decl.checked) {
+    document.getElementById('err5').classList.add('show');
+    document.getElementById('err5').style.display = 'flex';
+    return;
+  }
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  document.getElementById('submitText').textContent = 'Processing...';
+  document.getElementById('submitSpinner').style.display = 'block';
+
+  setTimeout(() => {
+    // Generate reference number
+    const ref = 'RW-CRG-' + new Date().getFullYear() + '-' + Math.random().toString(36).substr(2,8).toUpperCase();
+    document.getElementById('refNumber').textContent = ref;
+
+    // Show success
+    document.getElementById('progressTrack').style.display = 'none';
+    document.getElementById('step5').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }, 2200);
+}
+
+// Save draft
+document.querySelectorAll('.save-draft').forEach(b => {
+  b.addEventListener('click', () => {
+    b.textContent = '✅ Draft Saved!';
+    setTimeout(() => b.textContent = '💾 Save Draft', 2000);
+  });
+});
+</script>
+</body>
+</html>
+</body>
+</html>
